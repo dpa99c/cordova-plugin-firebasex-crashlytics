@@ -19,7 +19,7 @@
 
     <preference name="FIREBASE_CRASHLYTICS_COLLECTION_ENABLED" default="true" />
 
-    <js-module src="www/firebasex-crashlytics.js" name="FirebasexCrashlytics">
+    <js-module src="www/firebasex-crashlytics.js" name="FirebasexCrashlyticsPlugin">
         <merges target="FirebasexCrashlyticsPlugin" />
     </js-module>
 
@@ -65,4 +65,7 @@
             </pods>
         </podspec>
     </platform>
+
+    <hook src="scripts/after_prepare.js" type="after_prepare"/>
+
 </plugin>
