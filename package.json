@@ -1,0 +1,18 @@
+{
+  "name": "cordova-plugin-firebasex-crashlytics",
+  "version": "1.0.0",
+  "description": "Crashlytics module for cordova-plugin-firebasex",
+  "cordova": {
+    "id": "cordova-plugin-firebasex-crashlytics",
+    "platforms": ["android", "ios"]
+  },
+  "keywords": ["cordova", "firebase", "crashlytics"],
+  "author": "Dave Alden",
+  "license": "MIT",
+  "dependencies": {
+    "cordova-plugin-firebasex-core": "^1.0.0"
+  },
+  "devDependencies": {
+    "xcode": "^3.0.1"
+  }
+}

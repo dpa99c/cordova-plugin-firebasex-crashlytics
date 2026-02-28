@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova-plugin-firebasex-crashlytics"
+        version="1.0.0"
+        xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <name>Cordova FirebaseX Crashlytics</name>
+    <description>Crashlytics module for cordova-plugin-firebasex</description>
+    <license>MIT</license>
+    <keywords>cordova,firebase,crashlytics</keywords>
+
+    <engines>
+        <engine name="cordova" version=">=12.0.0" />
+        <engine name="cordova-android" version=">=14.0.0" />
+        <engine name="cordova-ios" version=">=7.0.0" />
+    </engines>
+
+    <dependency id="cordova-plugin-firebasex-core" />
+
+    <preference name="FIREBASE_CRASHLYTICS_COLLECTION_ENABLED" default="true" />
+
+    <js-module src="www/firebasex-crashlytics.js" name="FirebasexCrashlytics">
+        <merges target="FirebasexCrashlyticsPlugin" />
+    </js-module>
+
+    <!-- Android -->
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="FirebasexCrashlyticsPlugin">
+                <param name="android-package" value="org.apache.cordova.firebasex.FirebasexCrashlyticsPlugin" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="$FIREBASE_CRASHLYTICS_COLLECTION_ENABLED" />
+        </config-file>
+
+        <source-file src="src/android/FirebasexCrashlyticsPlugin.java" target-dir="src/org/apache/cordova/firebasex" />
+        <source-file src="src/android/JavaScriptException.java" target-dir="src/org/apache/cordova/firebasex" />
+        <framework src="src/android/build.gradle" custom="true" type="gradleReference" />
+    </platform>
+
+    <!-- iOS -->
+    <platform name="ios">
+        <hook type="after_plugin_install" src="scripts/ios/after_plugin_install.js" />
+        <hook type="before_plugin_uninstall" src="scripts/ios/before_plugin_uninstall.js" />
+
+        <config-file target="config.xml" parent="/*">
+            <feature name="FirebasexCrashlyticsPlugin">
+                <param name="ios-package" value="FirebasexCrashlyticsPlugin" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <header-file src="src/ios/FirebasexCrashlyticsPlugin.h" />
+        <source-file src="src/ios/FirebasexCrashlyticsPlugin.m" />
+
+        <podspec>
+            <config>
+                <source url="https://cdn.cocoapods.org/"/>
+            </config>
+            <pods use-frameworks="true">
+                <pod name="FirebaseCrashlytics" spec="12.9.0"/>
+            </pods>
+        </podspec>
+    </platform>
+</plugin>
