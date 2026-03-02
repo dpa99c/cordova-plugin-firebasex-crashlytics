@@ -1,20 +1,39 @@
+/**
+ * @file FirebasexCrashlyticsPlugin.m
+ * @brief iOS implementation of the FirebaseX Crashlytics Cordova plugin.
+ */
 #import "FirebasexCrashlyticsPlugin.h"
 #import "FirebasexCorePlugin.h"
 @import FirebaseCrashlytics;
 
+/** Preference key for persisting the Crashlytics collection enabled state. */
 static NSString *const FIREBASE_CRASHLYTICS_COLLECTION_ENABLED = @"FIREBASE_CRASHLYTICS_COLLECTION_ENABLED";
 
 @implementation FirebasexCrashlyticsPlugin
 
+/**
+ * Initialises the plugin by enabling Crashlytics collection by default.
+ */
 - (void)pluginInitialize {
     NSLog(@"FirebasexCrashlyticsPlugin: pluginInitialize");
     [[FirebasexCorePlugin sharedInstance] setPreferenceFlag:FIREBASE_CRASHLYTICS_COLLECTION_ENABLED flag:YES];
 }
 
+/**
+ * Checks if Crashlytics collection is currently enabled.
+ *
+ * @return YES if collection is enabled, NO otherwise.
+ */
 - (BOOL)isCrashlyticsEnabled {
     return [[FirebasexCorePlugin sharedInstance] getPreferenceFlag:FIREBASE_CRASHLYTICS_COLLECTION_ENABLED];
 }
 
+/**
+ * Enables or disables Crashlytics data collection.
+ * Persists the setting via the core plugin's preference system.
+ *
+ * @param command Cordova command; args[0] = boolean enabled.
+ */
 - (void)setCrashlyticsCollectionEnabled:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
         @try {
@@ -29,6 +48,7 @@ static NSString *const FIREBASE_CRASHLYTICS_COLLECTION_ENABLED = @"FIREBASE_CRAS
     }];
 }
 
+/** Returns the Crashlytics collection enabled state to the JS callback. */
 - (void)isCrashlyticsCollectionEnabled:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
         @try {
@@ -41,6 +61,7 @@ static NSString *const FIREBASE_CRASHLYTICS_COLLECTION_ENABLED = @"FIREBASE_CRAS
     }];
 }
 
+/** Returns whether the app crashed during the previous execution. */
 - (void)didCrashOnPreviousExecution:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
         @try {
@@ -59,6 +80,17 @@ static NSString *const FIREBASE_CRASHLYTICS_COLLECTION_ENABLED = @"FIREBASE_CRAS
     }];
 }
 
+/**
+ * Records a non-fatal error to Crashlytics.
+ *
+ * Handles three code paths:
+ * 1. If a stack trace array is provided (args[1]), creates a FIRExceptionModel with
+ *    FIRStackFrame objects for each frame.
+ * 2. If only a message is provided, records an NSError.
+ * 3. If Crashlytics is disabled, returns an error.
+ *
+ * @param command Cordova command; args[0] = error message, args[1] = optional stack trace array.
+ */
 - (void)logError:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
         @try {
@@ -98,6 +130,10 @@ static NSString *const FIREBASE_CRASHLYTICS_COLLECTION_ENABLED = @"FIREBASE_CRAS
     }];
 }
 
+/**
+ * Logs a message to appear in the Crashlytics logs tab of crash reports.
+ * Returns an error if Crashlytics collection is disabled.
+ */
 - (void)logMessage:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
         @try {
@@ -116,6 +152,10 @@ static NSString *const FIREBASE_CRASHLYTICS_COLLECTION_ENABLED = @"FIREBASE_CRAS
     }];
 }
 
+/**
+ * Sets a custom key-value pair on crash reports.
+ * Returns an error if Crashlytics collection is disabled.
+ */
 - (void)setCrashlyticsCustomKey:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^{
         @try {
@@ -135,10 +175,15 @@ static NSString *const FIREBASE_CRASHLYTICS_COLLECTION_ENABLED = @"FIREBASE_CRAS
     }];
 }
 
+/** Forces a crash for testing Crashlytics integration (terminates the app via assert). */
 - (void)sendCrash:(CDVInvokedUrlCommand *)command {
     assert(NO);
 }
 
+/**
+ * Sets the user ID for crash reports.
+ * Returns an error if Crashlytics collection is disabled.
+ */
 - (void)setCrashlyticsUserId:(CDVInvokedUrlCommand *)command {
     @try {
         NSString *userId = [command.arguments objectAtIndex:0];
