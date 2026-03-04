@@ -1,10 +1,8 @@
-# cordova-plugin-firebasex-crashlytics
-
-[![npm version](https://img.shields.io/npm/v/cordova-plugin-firebasex-crashlytics.svg)](https://www.npmjs.com/package/cordova-plugin-firebasex-crashlytics)
+# cordova-plugin-firebasex-crashlytics [![Latest Stable Version](https://img.shields.io/npm/v/cordova-plugin-firebasex-crashlytics.svg)](https://www.npmjs.com/package/cordova-plugin-firebasex-crashlytics)
 
 Firebase Crashlytics module for the [modular FirebaseX Cordova plugin suite](https://github.com/dpa99c/cordova-plugin-firebasex#modular-plugins).
 
-By default this plugin will ensure fatal native crashes in your apps are reported to Firebase via the Firebase Crashlytics SDK.
+This plugin wraps the [Firebase Crashlytics SDK](https://firebase.google.com/docs/crashlytics) and provides methods to log crashes and non-fatal errors, set user identifiers and custom keys, and control crash data collection in your Cordova app.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
