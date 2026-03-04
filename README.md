@@ -55,6 +55,9 @@ Or in your `config.xml`:
 
 | Variable | Default | Description |
 |---|---|---|
+| `ANDROID_FIREBASE_CRASHLYTICS_VERSION` | `20.0.4` | Android Firebase Crashlytics SDK version. |
+| `ANDROID_FIREBASE_CRASHLYTICS_NDK_VERSION` | `20.0.4` | Android Firebase Crashlytics NDK version. |
+| `IOS_FIREBASE_SDK_VERSION` | `12.9.0` | iOS Firebase SDK version (for crashlytics pod). |
 | `FIREBASE_CRASHLYTICS_COLLECTION_ENABLED` | `true` | Whether to enable Crashlytics data collection at app startup. Set to `false` to [disable data collection on startup](#disable-data-collection-on-startup). |
 
 # Disable data collection on startup
@@ -70,7 +73,7 @@ To do this, set the `FIREBASE_CRASHLYTICS_COLLECTION_ENABLED` plugin variable to
 This will disable Crashlytics data collection (on both Android & iOS) until you call [setCrashlyticsCollectionEnabled](#setcrashlyticscollectionenabled):
 
 ```javascript
-FirebasexCrashlyticsPlugin.setCrashlyticsCollectionEnabled(true);
+FirebasexCrashlytics.setCrashlyticsCollectionEnabled(true);
 ```
 
 Notes:
@@ -105,7 +108,7 @@ Make sure `cordova-plugin-firebasex-crashlytics` is the last plugin in the cordo
 
 # API
 
-The following methods are available via the `FirebasexCrashlyticsPlugin` global object.
+The following methods are available via the `FirebasexCrashlytics` global object.
 
 ## setCrashlyticsCollectionEnabled
 
@@ -119,7 +122,7 @@ Manually enable/disable Crashlytics data collection, e.g. if [disabled on app st
 
 ```javascript
 var shouldSetEnabled = true;
-FirebasexCrashlyticsPlugin.setCrashlyticsCollectionEnabled(
+FirebasexCrashlytics.setCrashlyticsCollectionEnabled(
     shouldSetEnabled,
     function () {
         console.log("Crashlytics data collection is enabled");
@@ -143,7 +146,7 @@ Indicates whether Crashlytics collection setting is currently enabled.
 -   {function} error - (optional) callback function which will be passed a {string} error message as an argument
 
 ```javascript
-FirebasexCrashlyticsPlugin.isCrashlyticsCollectionEnabled(
+FirebasexCrashlytics.isCrashlyticsCollectionEnabled(
     function (enabled) {
         console.log(
             "Crashlytics data collection is " +
@@ -169,7 +172,7 @@ Checks whether the app crashed on its previous run.
 -   {function} error - (optional) callback function which will be passed a {string} error message as an argument
 
 ```javascript
-FirebasexCrashlyticsPlugin.didCrashOnPreviousExecution(function(didCrashOnPreviousExecution){
+FirebasexCrashlytics.didCrashOnPreviousExecution(function(didCrashOnPreviousExecution){
     console.log(`Did crash on previous execution: ${didCrashOnPreviousExecution}`));
 }, function(error){
     console.error(`Error getting Crashlytics did crash on previous execution: ${error}`);
@@ -190,7 +193,7 @@ See [the Firebase docs for more](https://firebase.google.com/docs/crashlytics/cu
 -   {string} userId - User ID to associate with Crashlytics reports
 
 ```javascript
-FirebasexCrashlyticsPlugin.setCrashlyticsUserId("user_id");
+FirebasexCrashlytics.setCrashlyticsUserId("user_id");
 ```
 
 ## sendCrash
@@ -202,7 +205,7 @@ Crashes will appear under `Event type = "Crashes"` in the Crashlytics console.
 **Parameters**: None
 
 ```javascript
-FirebasexCrashlyticsPlugin.sendCrash();
+FirebasexCrashlytics.sendCrash();
 ```
 
 ## setCrashlyticsCustomKey
@@ -225,7 +228,7 @@ A maximum of 64 key/value pairs can be written, and new keys added beyond that l
 -   {function} error - (optional) callback function which will be passed a {string} error message as an argument
 
 ```javascript
-FirebasexCrashlyticsPlugin.setCrashlyticsCustomKey(
+FirebasexCrashlytics.setCrashlyticsCustomKey(
     "number",
     3.5,
     function () {
@@ -235,11 +238,11 @@ FirebasexCrashlyticsPlugin.setCrashlyticsCustomKey(
         console.error("Failed to set-custom key", error);
     }
 );
-FirebasexCrashlyticsPlugin.setCrashlyticsCustomKey("bool", true);
-FirebasexCrashlyticsPlugin.setCrashlyticsCustomKey("string", "Ipsum lorem");
+FirebasexCrashlytics.setCrashlyticsCustomKey("bool", true);
+FirebasexCrashlytics.setCrashlyticsCustomKey("string", "Ipsum lorem");
 // Following is just used to trigger report for Firebase
-FirebasexCrashlyticsPlugin.logMessage("about to send a crash for testing!");
-FirebasexCrashlyticsPlugin.sendCrash();
+FirebasexCrashlytics.logMessage("about to send a crash for testing!");
+FirebasexCrashlytics.sendCrash();
 ```
 
 ## logMessage
@@ -253,8 +256,8 @@ Also logs the message to the native device console.
 -   {string} message - message to associate with next native crash event
 
 ```javascript
-FirebasexCrashlyticsPlugin.logMessage("about to send a crash for testing!");
-FirebasexCrashlyticsPlugin.sendCrash();
+FirebasexCrashlytics.logMessage("about to send a crash for testing!");
+FirebasexCrashlytics.sendCrash();
 ```
 
 ## logError
@@ -282,7 +285,7 @@ window.onerror = function (errorMsg, url, line, col, error) {
     var stackTrace = null;
 
     var sendError = function () {
-        FirebasexCrashlyticsPlugin.logError(
+        FirebasexCrashlytics.logError(
             logMessage,
             stackTrace,
             function () {
@@ -313,7 +316,7 @@ window.onerror = function (errorMsg, url, line, col, error) {
 };
 
 // Send a non-fatal error
-FirebasexCrashlyticsPlugin.logError(
+FirebasexCrashlytics.logError(
     "A non-fatal error",
     function () {
         console.log("Sent non-fatal error");

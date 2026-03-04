@@ -4,7 +4,7 @@ interface StackTraceElement {
     lineNumber?: number;
 }
 
-interface FirebasexCrashlyticsPlugin {
+interface FirebasexCrashlytics {
     setCrashlyticsCollectionEnabled(enabled: boolean, success?: () => void, error?: (err: string) => void): void;
     isCrashlyticsCollectionEnabled(success: (enabled: boolean) => void, error?: (err: string) => void): void;
     logMessage(message: string, success?: () => void, error?: (err: string) => void): void;

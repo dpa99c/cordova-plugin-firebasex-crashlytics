@@ -20,7 +20,7 @@
     <preference name="FIREBASE_CRASHLYTICS_COLLECTION_ENABLED" default="true" />
 
     <js-module src="www/firebasex-crashlytics.js" name="FirebasexCrashlyticsPlugin">
-        <merges target="FirebasexCrashlyticsPlugin" />
+        <merges target="FirebasexCrashlytics" />
     </js-module>
 
     <!-- Android -->
@@ -36,9 +36,13 @@
             <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="$FIREBASE_CRASHLYTICS_COLLECTION_ENABLED" />
         </config-file>
 
+        <preference name="ANDROID_FIREBASE_CRASHLYTICS_VERSION" default="20.0.4" />
+        <preference name="ANDROID_FIREBASE_CRASHLYTICS_NDK_VERSION" default="20.0.4" />
+
         <source-file src="src/android/FirebasexCrashlyticsPlugin.java" target-dir="src/org/apache/cordova/firebasex" />
         <source-file src="src/android/JavaScriptException.java" target-dir="src/org/apache/cordova/firebasex" />
-        <framework src="src/android/build.gradle" custom="true" type="gradleReference" />
+        <framework src="com.google.firebase:firebase-crashlytics:$ANDROID_FIREBASE_CRASHLYTICS_VERSION" />
+        <framework src="com.google.firebase:firebase-crashlytics-ndk:$ANDROID_FIREBASE_CRASHLYTICS_NDK_VERSION" />
     </platform>
 
     <!-- iOS -->
@@ -56,12 +60,14 @@
         <header-file src="src/ios/FirebasexCrashlyticsPlugin.h" />
         <source-file src="src/ios/FirebasexCrashlyticsPlugin.m" />
 
+        <preference name="IOS_FIREBASE_SDK_VERSION" default="12.9.0" />
+
         <podspec>
             <config>
                 <source url="https://cdn.cocoapods.org/"/>
             </config>
             <pods use-frameworks="true">
-                <pod name="FirebaseCrashlytics" spec="12.9.0"/>
+                <pod name="FirebaseCrashlytics" spec="$IOS_FIREBASE_SDK_VERSION"/>
             </pods>
         </podspec>
     </platform>
