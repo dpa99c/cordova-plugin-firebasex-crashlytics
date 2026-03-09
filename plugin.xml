@@ -67,7 +67,7 @@
                 <source url="https://cdn.cocoapods.org/"/>
             </config>
             <pods use-frameworks="true">
-                <pod name="FirebaseCrashlytics" spec="$IOS_FIREBASE_SDK_VERSION"/>
+                <pod name="FirebaseCrashlytics" spec="12.9.0"/>
             </pods>
         </podspec>
     </platform>
