@@ -66,6 +66,8 @@ function resolvePluginVariables(context) {
                     }
                 }
             });
+        }else {
+            console.warn("[FirebasexCrashlytics] config.xml not found at expected path: " + configXmlPath);
         }
     } catch (e) {
         console.warn("[FirebasexCrashlytics] Could not read config.xml for plugin variables: " + e.message);
@@ -86,6 +88,8 @@ function resolvePluginVariables(context) {
                     }
                 });
             }
+        }else{
+            console.warn("[FirebasexCrashlytics] package.json not found at expected path: " + packageJsonPath);
         }
     } catch (e) {
         console.warn("[FirebasexCrashlytics] Could not read package.json for plugin variables: " + e.message);
