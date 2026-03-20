@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-firebasex-crashlytics",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Crashlytics module for cordova-plugin-firebasex",
   "cordova": {
     "id": "cordova-plugin-firebasex-crashlytics",

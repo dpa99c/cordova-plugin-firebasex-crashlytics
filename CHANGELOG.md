@@ -1,3 +1,9 @@
+# Version 1.0.3
+- (android) Fix Crashlytics Gradle plugin by using the original monolithic plugin approach: referenced `build.gradle` and enabled Google Services Gradle plugin in `plugin.xml`.
+
+# Version 1.0.2
+- (ios) Fix hook script compatibility with cordova-ios@8.
+
 # Version 1.0.1
 - Fix plugin metadata
 
