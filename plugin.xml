@@ -25,6 +25,10 @@
 
     <!-- Android -->
     <platform name="android">
+        <config-file target="config.xml" parent="/*">
+            <preference name="GradlePluginGoogleServicesEnabled" value="true" />
+        </config-file>
+
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="FirebasexCrashlyticsPlugin">
                 <param name="android-package" value="org.apache.cordova.firebasex.FirebasexCrashlyticsPlugin" />
@@ -43,6 +47,7 @@
         <source-file src="src/android/JavaScriptException.java" target-dir="src/org/apache/cordova/firebasex" />
         <framework src="com.google.firebase:firebase-crashlytics:$ANDROID_FIREBASE_CRASHLYTICS_VERSION" />
         <framework src="com.google.firebase:firebase-crashlytics-ndk:$ANDROID_FIREBASE_CRASHLYTICS_NDK_VERSION" />
+        <framework src="src/android/build.gradle" custom="true" type="gradleReference" />
     </platform>
 
     <!-- iOS -->
@@ -72,6 +77,5 @@
         </podspec>
     </platform>
 
-    <hook src="scripts/after_prepare.js" type="after_prepare"/>
 
 </plugin>

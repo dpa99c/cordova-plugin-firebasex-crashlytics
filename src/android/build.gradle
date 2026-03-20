@@ -1,0 +1,33 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.google.firebase:firebase-crashlytics-gradle:3.0.3"
+    }
+}
+repositories {
+    mavenCentral()
+    maven {
+        url "https://maven.google.com"
+    }
+}
+
+apply plugin: com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsPlugin
+android {
+    buildTypes {
+        debug {
+            firebaseCrashlytics {
+                mappingFileUploadEnabled false
+            }
+        }
+        release {
+            firebaseCrashlytics {
+                nativeSymbolUploadEnabled true
+                unstrippedNativeLibsDir "obj/local"
+                strippedNativeLibsDir "build/intermediates/jniLibs/release"
+            }
+        }
+    }
+}
