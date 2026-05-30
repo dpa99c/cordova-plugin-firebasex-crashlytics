@@ -134,6 +134,10 @@ function getPackageSwiftPaths(context) {
 }
 
 function rewritePackageSwiftValue(packageSwiftContents, key, value) {
+    if (!value) {
+        return { contents: packageSwiftContents, modified: false };
+    }
+
     var packageValueRegex = new RegExp("let " + key + "(?:\\s*:\\s*Version)? = \\\"[^\\\"]+\\\"");
     if (!packageValueRegex.test(packageSwiftContents)) {
         return { contents: packageSwiftContents, modified: false };
@@ -281,7 +285,9 @@ module.exports = function(context) {
     // Update FirebaseCrashlytics pod version in Podfile
     var pluginVariables = resolvePluginVariables(context);
     var useSwiftPackageManager = isSwiftPackageManagerEnabled(context.opts.projectRoot);
-    if (useSwiftPackageManager) {
+    if (!pluginVariables["IOS_FIREBASE_SDK_VERSION"]) {
+        console.warn("[FirebasexCrashlytics] IOS_FIREBASE_SDK_VERSION variable not set. Skipping iOS dependency version update.");
+    } else if (useSwiftPackageManager) {
         getPackageSwiftPaths(context).forEach(function(packageSwiftPath) {
             var packageSwiftContents = fs.readFileSync(packageSwiftPath, "utf-8");
             var result = rewritePackageSwiftValue(packageSwiftContents, "firebaseSDKVersion", pluginVariables["IOS_FIREBASE_SDK_VERSION"]);

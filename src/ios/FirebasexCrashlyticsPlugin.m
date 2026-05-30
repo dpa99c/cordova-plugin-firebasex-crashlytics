@@ -3,7 +3,7 @@
  * @brief iOS implementation of the FirebaseX Crashlytics Cordova plugin.
  */
 #import "FirebasexCrashlyticsPlugin.h"
-#import "FirebasexCorePlugin.h"
+@import cordova_plugin_firebasex_core;
 @import FirebaseCrashlytics;
 
 /** Preference key for persisting the Crashlytics collection enabled state. */
