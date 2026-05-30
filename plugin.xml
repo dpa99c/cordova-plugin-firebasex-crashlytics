@@ -51,7 +51,7 @@
     </platform>
 
     <!-- iOS -->
-    <platform name="ios">
+    <platform name="ios" package="swift">
         <hook type="after_plugin_install" src="scripts/ios/after_plugin_install.js" />
         <hook type="before_plugin_uninstall" src="scripts/ios/before_plugin_uninstall.js" />
 
@@ -72,7 +72,7 @@
                 <source url="https://cdn.cocoapods.org/"/>
             </config>
             <pods use-frameworks="true">
-                <pod name="FirebaseCrashlytics" spec="12.9.0"/>
+                <pod name="FirebaseCrashlytics" spec="12.9.0" nospm="true" />
             </pods>
         </podspec>
     </platform>

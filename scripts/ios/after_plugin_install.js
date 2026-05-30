@@ -30,6 +30,23 @@ var WRAPPER_PLUGIN_ID = "cordova-plugin-firebasex";
 
 /** @constant {string} The Xcode build phase comment/name used to identify the Crashlytics phase. */
 var comment = "\"Crashlytics\"";
+var crashlyticsScript = [
+    'CRASHLYTICS_SCRIPT="${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run"',
+    'if [ ! -f "$CRASHLYTICS_SCRIPT" ] && [ -n "$PODS_ROOT" ]; then',
+    '  CRASHLYTICS_SCRIPT="$PODS_ROOT/FirebaseCrashlytics/run"',
+    'fi',
+    'if [ ! -f "$CRASHLYTICS_SCRIPT" ]; then',
+    '  echo "warning: Firebase Crashlytics run script not found; skipping dSYM upload."',
+    '  exit 0',
+    'fi',
+    '"$CRASHLYTICS_SCRIPT"'
+].join("\\n");
+
+function isSwiftPackageManagerEnabled(projectRoot) {
+    var iosPlatformPath = path.join(projectRoot, "platforms", "ios");
+    var appSubDirPath = path.join(iosPlatformPath, "App");
+    return fs.existsSync(appSubDirPath) && fs.statSync(appSubDirPath).isDirectory();
+}
 
 /**
  * Resolves plugin variables using the 4-layer override strategy.
@@ -103,6 +120,30 @@ function resolvePluginVariables(context) {
     }
 
     return pluginVariables;
+}
+
+function getPackageSwiftPaths(context) {
+    var paths = [
+        path.resolve(__dirname, "..", "..", "Package.swift"),
+        path.join(context.opts.projectRoot, "plugins", PLUGIN_ID, "Package.swift")
+    ];
+
+    return paths.filter(function(packageSwiftPath, index) {
+        return fs.existsSync(packageSwiftPath) && paths.indexOf(packageSwiftPath) === index;
+    });
+}
+
+function rewritePackageSwiftValue(packageSwiftContents, key, value) {
+    var packageValueRegex = new RegExp("let " + key + "(?:\\s*:\\s*Version)? = \\\"[^\\\"]+\\\"");
+    if (!packageValueRegex.test(packageSwiftContents)) {
+        return { contents: packageSwiftContents, modified: false };
+    }
+
+    var updatedContents = packageSwiftContents.replace(packageValueRegex, function(match) {
+        return match.replace(/\"[^\"]+\"/, '"' + value + '"');
+    });
+
+    return { contents: updatedContents, modified: updatedContents !== packageSwiftContents };
 }
 
 /**
@@ -193,7 +234,7 @@ function addShellScriptBuildPhase(xcodeProjectPath) {
     var xcodeProject = xcode.project(xcodeProjectPath);
     xcodeProject.parseSync();
 
-    var script = '"' + '\\"${PODS_ROOT}/FirebaseCrashlytics/run\\"' + '"';
+    var script = '"' + crashlyticsScript.replace(/"/g, '\\"') + '"';
     var id = xcodeProject.generateUuid();
 
     if (!xcodeProject.hash.project.objects.PBXShellScriptBuildPhase) {
@@ -239,7 +280,18 @@ function addShellScriptBuildPhase(xcodeProjectPath) {
 module.exports = function(context) {
     // Update FirebaseCrashlytics pod version in Podfile
     var pluginVariables = resolvePluginVariables(context);
-    if (pluginVariables["IOS_FIREBASE_SDK_VERSION"]) {
+    var useSwiftPackageManager = isSwiftPackageManagerEnabled(context.opts.projectRoot);
+    if (useSwiftPackageManager) {
+        getPackageSwiftPaths(context).forEach(function(packageSwiftPath) {
+            var packageSwiftContents = fs.readFileSync(packageSwiftPath, "utf-8");
+            var result = rewritePackageSwiftValue(packageSwiftContents, "firebaseSDKVersion", pluginVariables["IOS_FIREBASE_SDK_VERSION"]);
+            if (result.modified) {
+                fs.writeFileSync(packageSwiftPath, result.contents);
+            }
+        });
+    }
+
+    if (!useSwiftPackageManager && pluginVariables["IOS_FIREBASE_SDK_VERSION"]) {
         try {
             var iosPlatformPath = path.join(context.opts.projectRoot, "platforms", "ios");
             var podFilePath = path.join(iosPlatformPath, "Podfile");
