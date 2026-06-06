@@ -25,6 +25,8 @@
 
     <!-- Android -->
     <platform name="android">
+        <hook type="after_prepare" src="scripts/android/after_prepare.js" />
+
         <config-file target="config.xml" parent="/*">
             <preference name="GradlePluginGoogleServicesEnabled" value="true" />
         </config-file>
