@@ -40,8 +40,8 @@
             <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="$FIREBASE_CRASHLYTICS_COLLECTION_ENABLED" />
         </config-file>
 
-        <preference name="ANDROID_FIREBASE_CRASHLYTICS_VERSION" default="20.0.4" />
-        <preference name="ANDROID_FIREBASE_CRASHLYTICS_NDK_VERSION" default="20.0.4" />
+        <preference name="ANDROID_FIREBASE_CRASHLYTICS_VERSION" default="20.0.6" />
+        <preference name="ANDROID_FIREBASE_CRASHLYTICS_NDK_VERSION" default="20.0.6" />
 
         <source-file src="src/android/FirebasexCrashlyticsPlugin.java" target-dir="src/org/apache/cordova/firebasex" />
         <source-file src="src/android/JavaScriptException.java" target-dir="src/org/apache/cordova/firebasex" />
