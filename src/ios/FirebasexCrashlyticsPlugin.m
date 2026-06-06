@@ -3,7 +3,13 @@
  * @brief iOS implementation of the FirebaseX Crashlytics Cordova plugin.
  */
 #import "FirebasexCrashlyticsPlugin.h"
-@import cordova_plugin_firebasex_core;
+#if __has_include("FirebasexCorePlugin.h")
+    // Cordova-ios 7 / CocoaPods: Files are compiled in a flat target structure
+    #import "FirebasexCorePlugin.h"
+#else
+    // Cordova-ios 8+ / SPM: Plugins are isolated Swift Package modules
+    @import cordova_plugin_firebasex_core;
+#endif
 @import FirebaseCrashlytics;
 
 /** Preference key for persisting the Crashlytics collection enabled state. */
