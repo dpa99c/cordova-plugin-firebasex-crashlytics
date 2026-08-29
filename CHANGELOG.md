@@ -1,3 +1,6 @@
+# Version 1.0.4
+- fix: pin core plugin dependency to v1
+
 # Version 1.0.3
 - (android) Fix Crashlytics Gradle plugin by using the original monolithic plugin approach: referenced `build.gradle` and enabled Google Services Gradle plugin in `plugin.xml`.
 
