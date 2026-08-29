@@ -22,6 +22,7 @@
   "keywords": ["cordova", "firebase", "crashlytics"],
   "author": "Dave Alden",
   "license": "MIT",
+  "types": "types/index.d.ts",
   "dependencies": {
     "xcode": "^3.0.1"
   },
