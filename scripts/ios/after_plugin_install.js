@@ -367,5 +367,9 @@ module.exports = function(context) {
     removeShellScriptBuildPhase(xcodeProjectPath);
     addShellScriptBuildPhase(xcodeProjectPath);
 
-    writeCollectionFlagToPlist(pluginVariables);
+    // Only on after_prepare: at install time GoogleService-Info.plist has not been copied into the
+    // platform yet, so doing it there would warn about a file that is simply not due yet.
+    if (context.hook !== "after_plugin_install") {
+        writeCollectionFlagToPlist(pluginVariables);
+    }
 };
