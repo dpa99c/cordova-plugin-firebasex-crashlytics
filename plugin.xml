@@ -55,6 +55,10 @@
     <!-- iOS -->
     <platform name="ios" package="swift">
         <hook type="after_plugin_install" src="scripts/ios/after_plugin_install.js" />
+        <!-- Also on after_prepare: the build phase added at install time does not survive platform
+             creation, and the same script is idempotent, so re-running it there is what keeps the
+             dSYM upload in the project that actually gets built. -->
+        <hook type="after_prepare" src="scripts/ios/after_plugin_install.js" />
         <hook type="before_plugin_uninstall" src="scripts/ios/before_plugin_uninstall.js" />
 
         <config-file target="config.xml" parent="/*">
