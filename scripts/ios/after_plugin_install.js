@@ -215,7 +215,10 @@ function removeShellScriptBuildPhase(xcodeProjectPath) {
         if (nativeTargetId.indexOf("_comment") !== -1) continue;
         var nativeTarget = nativeTargets[nativeTargetId];
         nativeTarget.buildPhases = nativeTarget.buildPhases.filter(function (buildPhase) {
-            return buildPhase.comment !== commentTest;
+            // addShellScriptBuildPhase pushes the reference with the QUOTED comment, so comparing
+            // only against the unquoted name never matches and the reference outlives the phase
+            // object it points at. Compare both forms.
+            return buildPhase.comment !== comment && buildPhase.comment !== commentTest;
         });
     }
 
