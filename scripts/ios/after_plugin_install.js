@@ -215,7 +215,10 @@ function removeShellScriptBuildPhase(xcodeProjectPath) {
         if (nativeTargetId.indexOf("_comment") !== -1) continue;
         var nativeTarget = nativeTargets[nativeTargetId];
         nativeTarget.buildPhases = nativeTarget.buildPhases.filter(function (buildPhase) {
-            return buildPhase.comment !== commentTest;
+            // addShellScriptBuildPhase pushes the reference with the QUOTED comment, so comparing
+            // only against the unquoted name never matches and the reference outlives the phase
+            // object it points at. Compare both forms.
+            return buildPhase.comment !== comment && buildPhase.comment !== commentTest;
         });
     }
 
@@ -276,6 +279,40 @@ function addShellScriptBuildPhase(xcodeProjectPath) {
 }
 
 /**
+ * Writes FIREBASE_CRASHLYTICS_COLLECTION_ENABLED into GoogleService-Info.plist as the key the iOS
+ * SDK reads, `FirebaseCrashlyticsCollectionEnabled`.
+ *
+ * The variable is declared for Android as a manifest meta-data entry, but nothing applied it on
+ * iOS, so the switch was inert there: collection is enabled by default, and setting the variable to
+ * false did nothing. cordova-plugin-firebasex-performance does the same thing for its own variable
+ * in scripts/after_prepare.js; this mirrors it.
+ *
+ * @param {Object} pluginVariables Resolved plugin variable key/value pairs.
+ */
+function writeCollectionFlagToPlist(pluginVariables) {
+    if (typeof pluginVariables["FIREBASE_CRASHLYTICS_COLLECTION_ENABLED"] === "undefined") return;
+    try {
+        var plist = require("plist");
+        var appName = fs.existsSync(path.join("platforms", "ios", "App")) ? "App" : getAppName();
+        if (!appName) return;
+        var googlePlistPath = path.join("platforms", "ios", appName, "Resources", "GoogleService-Info.plist");
+        if (!fs.existsSync(googlePlistPath)) {
+            console.warn("[FirebasexCrashlytics] GoogleService-Info.plist not found at " + googlePlistPath);
+            return;
+        }
+        var googlePlist = plist.parse(fs.readFileSync(googlePlistPath, "utf-8"));
+        // Anything but the literal "false" is true, matching how the Android side treats it.
+        var value = pluginVariables["FIREBASE_CRASHLYTICS_COLLECTION_ENABLED"] !== "false" ? "true" : "false";
+        if (googlePlist["FirebaseCrashlyticsCollectionEnabled"] === value) return;
+        googlePlist["FirebaseCrashlyticsCollectionEnabled"] = value;
+        fs.writeFileSync(googlePlistPath, plist.build(googlePlist), "utf-8");
+        console.log("[FirebasexCrashlytics] Set FirebaseCrashlyticsCollectionEnabled=" + value + " in GoogleService-Info.plist");
+    } catch (e) {
+        console.warn("[FirebasexCrashlytics] Could not update GoogleService-Info.plist: " + e.message);
+    }
+}
+
+/**
  * Cordova hook entry point.
  * Removes any existing Crashlytics build phase, then adds a fresh one.
  *
@@ -329,4 +366,10 @@ module.exports = function(context) {
     var xcodeProjectPath = getXcodeProjectPath();
     removeShellScriptBuildPhase(xcodeProjectPath);
     addShellScriptBuildPhase(xcodeProjectPath);
+
+    // Only on after_prepare: at install time GoogleService-Info.plist has not been copied into the
+    // platform yet, so doing it there would warn about a file that is simply not due yet.
+    if (context.hook !== "after_plugin_install") {
+        writeCollectionFlagToPlist(pluginVariables);
+    }
 };
