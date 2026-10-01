@@ -1,3 +1,7 @@
+# Version 2.0.3
+- (ios) fix: apply `IOS_FIREBASE_SDK_VERSION` to both installed and generated Swift package manifests.
+	- Resolves https://github.com/dpa99c/cordova-plugin-firebasex/issues/977
+
 # Version 2.0.2
 - fix: add types field to package.json so TypeScript resolves type definitions
 	- Merged from [PR #2](https://github.com/dpa99c/cordova-plugin-firebasex-crashlytics/pull/2)
