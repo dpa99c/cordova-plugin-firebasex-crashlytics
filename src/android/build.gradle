@@ -1,3 +1,5 @@
+// Crashlytics needs Google Services applied first to configure its mapping-file task.
+apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 android {
     buildTypes {
